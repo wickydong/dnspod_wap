@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+body,td,th,input,textarea {
+	/*font-family: Heiti SC;*/
+	font-size: 10px;
+	font-family:"微软雅黑";
+}
+.splitLine {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #000000;
+}
+.splitLineDown
+{
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #000000;
+}
+.websjy2{-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}

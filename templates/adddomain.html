@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	添加新域名
+</title><link rel="Stylesheet" href="/static/css/Common.css" type="text/css" /><meta name="viewport" content="width=device-width" charset="utf-8"/>
+    <script language="javascript" src="../Scripts/AddDomain_Page_ScriptInvoke.js"type="text/javascript"></script>
+
+</head>
+<body>
+<div style="border:1px solid #CCCCCC; width:270px; height:auto; background:#EEE; margin-bottom:10px; padding:20px; font-size:12px; margin:auto" class="websjy2";>
+    <form name="add_domain" method="post" action="/add_domains" id="form1" title="添加域名">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE2OTAzMzE2MjBkZCUE93dp9Bvj7qLLK0yIWOAQ8rsOzl2Jhjpr58M6rtcD" />
+</div>
+
+<div>
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBAL/ycKrCgLwv+yNBwKegd7yBQLA1JJYD/DbCekZk/yP0C4pMszx+RxKfZI9NszyfLRzEPi4rSI=" />
+</div>
+            <a href="DomainList.aspx">返回域名列表</a><br />
+            <table width="250px">
+                <tr>
+                    <td>
+                        <span id="Label1" style="font-weight:normal;">域名：</span>
+                    </td>
+                    <td>
+                        <input name="add_domain" type="text" id="ctlDomainTextBox" style="font-weight:normal;width:160px;" >
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;
+                        
+                    </td>
+                    <td>
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <input type="submit" name="ctlSubmitButton" value="添加" id="ctlSubmitButton" />
+                                    &nbsp;<input type="submit" name="ctlBackButton" value="返回" id="ctlBackButton" />
+&nbsp; {% if add_domain_status %}
+<p>{{ add_domain_status  }}</p>
+{% endif  %}
+                                </td>
+                                <td align="right">&nbsp;
+                                    </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="3" align="center">
+                    
+<p>@ 2013 DNSPod</p>
+
+                    </td></tr>
+            </table>
+    </form>
+    </div>
+</body>
+</html>
+
