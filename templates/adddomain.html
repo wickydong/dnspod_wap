@@ -17,7 +17,7 @@
 
 	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBAL/ycKrCgLwv+yNBwKegd7yBQLA1JJYD/DbCekZk/yP0C4pMszx+RxKfZI9NszyfLRzEPi4rSI=" />
 </div>
-            <a href="DomainList.aspx">返回域名列表</a><br />
+            <a href="/domainlist">返回域名列表</a><br />
             <table width="250px">
                 <tr>
                     <td>
@@ -36,10 +36,9 @@
                             <tr>
                                 <td>
                                     <input type="submit" name="ctlSubmitButton" value="添加" id="ctlSubmitButton" />
-                                    &nbsp;<input type="submit" name="ctlBackButton" value="返回" id="ctlBackButton" />
-&nbsp; {% if add_domain_status %}
-<p>{{ add_domain_status  }}</p>
-{% endif  %}
+	{% if add_domain_status %}
+		<p>{{ add_domain_status  }}</p>
+	{% endif  %}
                                 </td>
                                 <td align="right">&nbsp;
                                     </td>
