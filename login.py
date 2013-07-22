@@ -29,8 +29,31 @@ def login():
         session["user_passwd"] = user_passwd
         print session["user_mail"]
         return redirect(url_for('domainlist'))
+    elif int(user_code) == 50:
+        return render_template("index_d.html")
     else:
         return render_template("index.html")
+#D令牌登录
+@app.route("/login_d",methods=["POST"])
+def login_d():
+    user_mail = request.form["user_mail"]
+    user_passwd = request.form["user_passwd"]
+    user_d = request.form["user_d"]
+    
+    login_data = {"login_email": user_mail,"login_password": user_passwd,"login_code": user_d,"format": "json"}
+    login_request = requests.post("https://dnsapi.cn/User.Detail",data=login_data)
+    user_message = json.loads(login_request.text)
+    user_status = user_message["status"]
+    user_code = user_status["code"]
+    print user_code
+    if int(user_code) == 1:
+        session["user_mail"] = user_mail
+        session["user_passwd"] = user_passwd
+        print session["user_mail"]
+        return redirect(url_for('domainlist'))
+    else:
+        return render_template("index_d.html")
+
 
 #进入域名列表
 
@@ -44,14 +67,16 @@ def domainlist(domainfree=None,domainvip=None):
     vip_total = domaininfo["vip_total"]
     print domainnum,vip_total
     domainlists = domainlist["domains"]
+    domainfree = []
+    domainvip = []
     for domainmessage in domainlists:
         domainname = domainmessage["name"]
         domaingrade = domainmessage["grade"]
         if domaingrade == "D_Free" or domaingrade == "DP_Free":
-            domainfree = domainname
-            print domainfree,"is free"
+            domainfree.append(domainname)
+            print domainname,"is free"
         else:
-            domainvip = domainname
+            domainvip.append(domainname)
             print domainvip,"is vip"
     return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip)
 
@@ -80,7 +105,10 @@ def Add_Domains(add_domain_status=None):
         add_domain_status = "fail"
     return render_template("adddomain.html", add_domain_status=add_domain_status)
 
-
+@app.route("/login_out")
+def login_out():
+    session.pop("user_mail",None)
+    return redirect(url_for("index"))
 if __name__ == "__main__":   
     app.secret_key = 'fuckmjj'
     app.run(host="0.0.0.0",port=1234,debug=True)    
