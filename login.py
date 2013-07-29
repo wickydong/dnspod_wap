@@ -42,11 +42,14 @@ def login_d():
     
     login_data = {"login_email": user_mail,"login_password": user_passwd,"login_code": user_d,"format": "json"}
     login_request = requests.post("https://dnsapi.cn/User.Detail",data=login_data)
+    
     user_message = json.loads(login_request.text)
     user_status = user_message["status"]
     user_code = user_status["code"]
     print user_code
     if int(user_code) == 1:
+        d_cookies = make_response(user_message)
+        d_cookies.set_cookies()
         session["user_mail"] = user_mail
         session["user_passwd"] = user_passwd
         print session["user_mail"]
@@ -57,8 +60,8 @@ def login_d():
 
 #进入域名列表
 
-@app.route("/domainlist")
-def domainlist(domainfree=None,domainvip=None):
+@app.route("/domainlist/<status>")
+def domainlist(domainfree=None,domainvip=None,status=None):
     login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json"}
     login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data)
     domainlist = json.loads(login_request.text)
@@ -78,7 +81,7 @@ def domainlist(domainfree=None,domainvip=None):
         else:
             domainvip.append(domainname)
             print domainvip,"is vip"
-    return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip)
+    return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip,status=status)
 
 #从域名列表进入添加域名页面
 
@@ -105,10 +108,35 @@ def Add_Domains(add_domain_status=None):
         add_domain_status = "fail"
     return render_template("adddomain.html", add_domain_status=add_domain_status)
 
+#删除域名
+@app.route("/rm/<domain>",methods=["GET"])
+def rm(domain):
+    return render_template("rm.html",domain=domain)
+#@app.route("/rm_domain",method)
+
+#确认删除
+
+@app.route("/rm_domain/<domain>",methods=["GET"])
+def rm_domain(domain):
+    
+    rm_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"format": "json"}
+    rm_request = requests.post("https://dnsapi.cn/Domain.Remove",data=rm_data)
+    rm_result = json.loads(rm_request.text)
+    status = rm_result["status"]
+    code = int(status["code"])
+    if code == 1:
+        return redirect(url_for("domainlist"))
+    elif code == -15 or code == 7:
+        status = "domain is already ban or lock"
+        return redirect(url_for("domainlist",status=status))
+
+#退出登录
 @app.route("/login_out")
 def login_out():
     session.pop("user_mail",None)
     return redirect(url_for("index"))
+
+
 if __name__ == "__main__":   
     app.secret_key = 'fuckmjj'
     app.run(host="0.0.0.0",port=1234,debug=True)    
