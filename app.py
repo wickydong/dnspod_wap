@@ -2,7 +2,7 @@
 # -*-coding:utf-8-*-
 import json
 import requests
-from flask import Flask,render_template,request,session,url_for,redirect,session
+from flask import Flask,render_template,request,session,url_for,redirect,session,make_response
 
 app = Flask(__name__)
 
@@ -11,59 +11,41 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", is_dtoken=False)
 
 #获取用户帐号以及密码并储存，重定向到域名列表路由
 
-@app.route("/login", methods=["POST"])
-def login():
-    user_mail = request.form["user_mail"]
-    user_passwd = request.form["user_passwd"]
-    login_data = {"login_email": user_mail,"login_password": user_passwd,"format": "json"}
-    login_request = requests.post("https://dnsapi.cn/User.Detail",data=login_data)
-    user_message = json.loads(login_request.text)
-    user_status = user_message["status"]
-    user_code = user_status["code"]
-    if int(user_code) == 1:
-        session["user_mail"] = user_mail
-        session["user_passwd"] = user_passwd
-        print session["user_mail"]
-        return redirect(url_for('domainlist',state=" "))
-    elif int(user_code) == 50:
-        return render_template("index_d.html")
-    else:
-        return render_template("index.html")
-#D令牌登录
-@app.route("/login_d",methods=["POST"])
+@app.route("/login",methods=["POST"])
 def login_d():
     user_mail = request.form["user_mail"]
     user_passwd = request.form["user_passwd"]
-    user_d = request.form["user_d"]
-    
+    user_d = request.form.get('user_d')
+
     login_data = {"login_email": user_mail,"login_password": user_passwd,"login_code": user_d,"format": "json"}
     login_request = requests.post("https://dnsapi.cn/User.Detail",data=login_data)
-    
+
     user_message = json.loads(login_request.text)
     user_status = user_message["status"]
     user_code = user_status["code"]
-    print user_code
     if int(user_code) == 1:
-        d_cookies = make_response(user_message)
-        d_cookies.set_cookies()
         session["user_mail"] = user_mail
         session["user_passwd"] = user_passwd
-        print session["user_mail"]
-        return redirect(url_for('domainlist'))
+        for i in login_request.cookies:
+            if i.name[0] == 't':
+                session['cookies'] = {i.name: i.value}
+        return redirect(url_for('domainlist', state=' '))
+    elif int(user_code) == 50:
+        return render_template("index.html", is_dtoken=True)
     else:
-        return render_template("index_d.html")
+        return render_template("index.html", is_dtoken=False)
 
 
 #进入域名列表
 
 @app.route("/domainlist/<state>")
 def domainlist(domainfree=None,domainvip=None,state=None):
-    login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json"}
-    login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data)
+    login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json","error_on_empty": "no"}
+    login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data, cookies=session['cookies'])
     domainlist = json.loads(login_request.text)
     domaininfo = domainlist["info"]
     domainnum = domaininfo["all_total"]
