@@ -35,9 +35,9 @@ def login_d():
                 session['cookies'] = {i.name: i.value}
         return redirect(url_for('domainlist', state=' '))
     elif int(user_code) == 50:
-        return render_template("index.html", is_dtoken=True)
+        return render_template("index.html", is_dtoken=True, user_mail=user_mail, user_passwd=user_passwd)
     else:
-        return render_template("index.html", is_dtoken=False)
+        return render_template("index.html", is_dtoken=False, user_mail=user_mail, user_passwd=user_passwd)
 
 
 #进入域名列表
