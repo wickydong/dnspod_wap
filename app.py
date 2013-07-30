@@ -28,7 +28,7 @@ def login():
         session["user_mail"] = user_mail
         session["user_passwd"] = user_passwd
         print session["user_mail"]
-        return redirect(url_for('domainlist',status=" "))
+        return redirect(url_for('domainlist',state=" "))
     elif int(user_code) == 50:
         return render_template("index_d.html")
     else:
@@ -60,8 +60,8 @@ def login_d():
 
 #进入域名列表
 
-@app.route("/domainlist/<status>")
-def domainlist(domainfree=None,domainvip=None,status=None):
+@app.route("/domainlist/<state>")
+def domainlist(domainfree=None,domainvip=None,state=None):
     login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json"}
     login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data)
     domainlist = json.loads(login_request.text)
@@ -81,7 +81,7 @@ def domainlist(domainfree=None,domainvip=None,status=None):
         else:
             domainvip.append(domainname)
             print domainvip,"is vip"
-    return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip,status=status)
+    return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip,state=state)
 
 #从域名列表进入添加域名页面
 
@@ -125,27 +125,31 @@ def rm_domain(domain):
     status = rm_result["status"]
     code = int(status["code"])
     if code == 1:
-        return redirect(url_for("domainlist"))
+        return redirect(url_for("domainlist",state="del domain is successful"))
     elif code == -15 or code == 7:
-        status = "domain is already ban or lock"
-        return redirect(url_for("domainlist",status=status))
+        state = "domain is already ban or lock"
+        return redirect(url_for("domainlist",state=state))
 
 #禁用域名
 
-@app.route("/modify/<domain>")
-def modify(domain):
-    return render_template("modify.html",domain=domain)
+@app.route("/disabled/<domain>")
+def disabled(domain):
+    return render_template("disabled.html",domain=domain)
 
 #确认禁用
 
-@app.route("/modify_domain/<domain>")
-def modify_domain(domain)
-    modify_data = {{"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"format": "json"}
-    modify_request = requests.post("https://dnsapi.cn/Domain.Status",data=modify_data)
-    modify_result = json.load(modify_request.text)
-    status = modify_result["status"]
+@app.route("/disabled_domain/<domain>")
+def disabled_domain(domain):
+    disabled_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"status": "disable","format": "json"}
+    disabled_request = requests.post("https://dnsapi.cn/Domain.Status",data=disabled_data)
+    disabled_result = json.loads(disabled_request.text)
+    status = disabled_result["status"]
     code = int(status["code"])
-    
+    if code == 1:
+        return redirect(url_for("domainlist",state="disable domain is successful"))
+    else:
+        state = "domain is not disabled"
+        return redirect(url_for("domainlist",state=state))
 
 
 
