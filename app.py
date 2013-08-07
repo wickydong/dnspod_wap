@@ -4,6 +4,8 @@ import json
 import requests
 from flask import Flask,render_template,request,session,url_for,redirect,session,make_response
 
+domain_id = {}
+
 app = Flask(__name__)
 
 #登录页
@@ -23,7 +25,7 @@ def login_d():
 
     login_data = {"login_email": user_mail,"login_password": user_passwd,"login_code": user_d,"format": "json"}
     login_request = requests.post("https://dnsapi.cn/User.Detail",data=login_data)
-
+    print login_request.cookies
     user_message = json.loads(login_request.text)
     user_status = user_message["status"]
     user_code = user_status["code"]
@@ -50,6 +52,7 @@ def domainlist(domainfree=None,domainvip=None,state=None):
     domaininfo = domainlist["info"]
     domainnum = domaininfo["all_total"]
     vip_total = domaininfo["vip_total"]
+    
     print domainnum,vip_total
     domainlists = domainlist["domains"]
     domainfree = []
@@ -57,6 +60,9 @@ def domainlist(domainfree=None,domainvip=None,state=None):
     for domainmessage in domainlists:
         domainname = domainmessage["name"]
         domaingrade = domainmessage["grade"]
+        domainid = domainmessage["id"]
+        domain_id[domainname] = domainid
+        print domain_id
         if domaingrade == "D_Free" or domaingrade == "DP_Free":
             domainfree.append(domainname)
             print domainname,"is free"
@@ -77,7 +83,7 @@ def add_domain():
 def Add_Domains(add_domain_status=None):
     add_domain = request.form["add_domain"]
     add_domain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain":add_domain,"format":"json"} 
-    add_domain_request = requests.post("https://dnsapi.cn/Domain.Create",data=add_domain_data)
+    add_domain_request = requests.post("https://dnsapi.cn/Domain.Create",data=add_domain_data,cookies=session['cookies'])
     add_domain_result = json.loads(add_domain_request.text)
     status = add_domain_result['status']
     code = int(status['code'])
@@ -90,11 +96,22 @@ def Add_Domains(add_domain_status=None):
         add_domain_status = "fail"
     return render_template("adddomain.html", add_domain_status=add_domain_status)
 
+#编辑域名
+
+@app.route("/editdomain/<domain>")
+def editdomain(domain):
+    domainid = domain_id[domain]
+    editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json"}
+    editdomain_request = requests.post("https://dnsapi.cn/Record.List",data=editdomain_data,cookies=session['cookies'])
+    editdomain_result = json.loads(editdomain_request.text)
+    print editdomain_result
+    return render_template("editdomain.html")
+    
 #删除域名
+
 @app.route("/rm/<domain>",methods=["GET"])
 def rm(domain):
     return render_template("rm.html",domain=domain)
-#@app.route("/rm_domain",method)
 
 #确认删除
 
@@ -102,7 +119,7 @@ def rm(domain):
 def rm_domain(domain):
     
     rm_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"format": "json"}
-    rm_request = requests.post("https://dnsapi.cn/Domain.Remove",data=rm_data)
+    rm_request = requests.post("https://dnsapi.cn/Domain.Remove",data=rm_data,cookies=session['cookies'])
     rm_result = json.loads(rm_request.text)
     status = rm_result["status"]
     code = int(status["code"])
@@ -123,7 +140,7 @@ def disabled(domain):
 @app.route("/disabled_domain/<domain>")
 def disabled_domain(domain):
     disabled_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"status": "disable","format": "json"}
-    disabled_request = requests.post("https://dnsapi.cn/Domain.Status",data=disabled_data)
+    disabled_request = requests.post("https://dnsapi.cn/Domain.Status",data=disabled_data,cookies=session['cookies'])
     disabled_result = json.loads(disabled_request.text)
     status = disabled_result["status"]
     code = int(status["code"])
