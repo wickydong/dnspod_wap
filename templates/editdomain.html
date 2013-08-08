@@ -1,10 +1,334 @@
-<html>
-<head>
-<title>
-编辑域名
-</title>
-</head>
+CTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head><title>{{ domain }}记录列表
+
+</title><link rel="Stylesheet" href="../Common.css" type="text/css" /><meta name="viewport" content="width=device-width" /></head>
+
 <body>
-<p>hi,girl~</p>
+
+    <form name="form1" method="post" action="RecordList.aspx?domain=fuckmjj.com" id="form1">
+
+<div>
+
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKLTc5ODQ0MzEwMWRkaU2b2guRuKvdD9il6TfnLqNtMexNfH3ysPM3L5IdGFs=" />
+
+</div>
+
+
+
+<div>
+
+
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBgKWnb+uBwLziIONDwKRra7zDAKg+sWZCAL6sLHzAwLWv/DSCFzVP8B1IEkk/TM8mfHBJ++aObnxwfiNS6O7qvKAHYQ4" />
+
+</div>
+
+    <a href="DomainList.aspx">返回域名列表</a>
+
+    <a id="ctlAddRecordHyperLink" href="RecordForm.aspx?domain=fuckmjj.com&amp;domainid=7552936&amp;recordid=0">添加记录</a>
+
+    <br />
+
+    快速查找
+
+    <input name="ctlFilteHostTextBox" type="text" id="ctlFilteHostTextBox" style="width:150px;" />
+
+    <input type="submit" name="ctlFilteButton" value="确定" id="ctlFilteButton" />
+
+    <br />
+
+    <span id="ctlShowFilteMessageLabel"><a href="?domain=fuckmjj.com">显示全部域名</a></span>
+
+    <br />
+
+    主机头：<input name="ctlfSubnameTextBox" type="text" id="ctlfSubnameTextBox" style="width:35px;" />
+
+    记录值：<input name="ctlfValueTextBox" type="text" id="ctlfValueTextBox" style="width:60px;" />
+
+    <input type="submit" name="ctlfSubmitButton" value="确定" id="ctlfSubmitButton" />
+
+    <br />
+
+    <table width="250px">
+
+        <tr>
+
+            <td align="right">
+
+                排序方式：<a href="RecordList.aspx?sort=subname&domain=fuckmjj.com">主机名</a> <a href="RecordList.aspx?sort=isp&domain=fuckmjj.com">
+
+                    线路</a> <a href="RecordList.aspx?sort=type&domain=fuckmjj.com">类型</a> <a href="RecordList.aspx?sort=value&domain=fuckmjj.com">
+
+                        记录值</a>
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    
+
+            <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
+
+        
+
+            <tr>
+
+                <td colspan="2">
+
+                    <table class="splitLineDown" border="0" cellpadding="0" cellspacing="0" width="100%">
+
+                        <tr>
+
+                            <td>
+
+                                <span id="ctlRecoardDataList_ctl01_ctlSortFieldLabel">A</span>&nbsp;
+
+                            </td>
+
+                            <td width="35" align="right">
+
+                                <a href="#">TOP</a>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td colspan="2">
+
+                    
+
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+
+                            <tr>
+
+                                <td width="35px">
+                                     {% for record in records["name"]%} 
+                                    <span id="ctlRecoardDataList_ctl01_ctlRecoardDataList1_ctl01_ctlF1">{{ record }}</span>
+                                      {% endfor %} 
+                                </td>
+
+                                <td width="35px">
+
+                                    <span id="ctlRecoardDataList_ctl01_ctlRecoardDataList1_ctl01_ctlF2"></span>
+
+                                </td>
+
+                                <td>
+
+                                    <span id="ctlRecoardDataList_ctl01_ctlRecoardDataList1_ctl01_ctlF3"></span>
+
+                                </td>
+
+                                <td align="right" width="95px">
+
+                                    <a href="RecordForm.aspx?domain=fuckmjj.com&domainid=7552936&recordid=36481462">
+
+                                        编辑</a>
+
+                                    <a id="ctlRecoardDataList_ctl01_ctlRecoardDataList1_ctl01_ctlStateHyperLink" href="MessageBox.aspx?params=0,0,36481462,7552936,fuckmjj.com">禁用</a>
+
+                                    <a href="MessageBox.aspx?params=-1,0,36481462,7552936,fuckmjj.com">
+
+                                        删除</a>
+
+                                </td>
+
+                            </tr>
+
+                        
+
+                            <tr>
+
+                                <td colspan="4">
+
+                                    &nbsp;
+
+                                </td>
+
+                            </tr>
+                            </table>
+
+                </td>
+
+            </tr>
+
+        
+
+            <tr>
+
+                <td colspan="2">
+
+                    <table class="splitLineDown" border="0" cellpadding="0" cellspacing="0" width="100%">
+
+                        <tr>
+
+                            <td>
+
+                                <span id="ctlRecoardDataList_ctl02_ctlSortFieldLabel">NS</span>&nbsp;
+
+                            </td>
+
+                            <td width="35" align="right">
+
+                                <a href="#">TOP</a>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </td>
+
+            </tr>
+
+            <tr>
+
+                <td colspan="2">
+
+                    
+
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+
+                        
+
+                            <tr>
+
+                                <td width="35px">
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl01_ctlF1">@</span>
+
+                                </td>
+
+                                <td width="35px">
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl01_ctlF2">默认</span>
+
+                                </td>
+
+                                <td>
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl01_ctlF3">f1g1ns...d.net.</span>
+
+                                </td>
+
+                                <td align="right" width="95px">
+
+                                    <a href="RecordForm.aspx?domain=fuckmjj.com&domainid=7552936&recordid=35884781">
+
+                                        编辑</a>
+
+                                    <a id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl01_ctlStateHyperLink" href="MessageBox.aspx?params=0,0,35884781,7552936,fuckmjj.com">禁用</a>
+
+                                    <a href="MessageBox.aspx?params=-1,0,35884781,7552936,fuckmjj.com">
+
+                                        删除</a>
+
+                                </td>
+
+                            </tr>
+
+                        
+
+                            <tr>
+
+                                <td width="35px">
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl02_ctlF1">@</span>
+
+                                </td>
+
+                                <td width="35px">
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl02_ctlF2">默认</span>
+
+                                </td>
+
+                                <td>
+
+                                    <span id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl02_ctlF3">f1g1ns...d.net.</span>
+
+                                </td>
+
+                                <td align="right" width="95px">
+
+                                    <a href="RecordForm.aspx?domain=fuckmjj.com&domainid=7552936&recordid=35884782">
+
+                                        编辑</a>
+
+                                    <a id="ctlRecoardDataList_ctl02_ctlRecoardDataList1_ctl02_ctlStateHyperLink" href="MessageBox.aspx?params=0,0,35884782,7552936,fuckmjj.com">禁用</a>
+
+                                    <a href="MessageBox.aspx?params=-1,0,35884782,7552936,fuckmjj.com">
+
+                                        删除</a>
+
+                                </td>
+
+                            </tr>
+
+                        
+
+                            <tr>
+
+                                <td colspan="4">
+
+                                    &nbsp;
+
+                                </td>
+
+                            </tr>
+
+                            </table>
+
+                </td>
+
+            </tr>
+
+        
+
+            </table>
+
+        
+
+    <table width="250px">
+
+        <tr>
+
+            <td align="center">
+
+                
+
+<p>@ 2010 DNSPod</p>
+
+
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br />
+
+    </form>
+
 </body>
+
 </html>
+
+
+

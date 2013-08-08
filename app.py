@@ -99,14 +99,23 @@ def Add_Domains(add_domain_status=None):
 #编辑域名
 
 @app.route("/editdomain/<domain>")
-def editdomain(domain):
+#def editdomain(domain,sub_id=None,sub_name=None,sub_type=None,sub_ttl=None,sub_value=None,sub_mx=None,sub_enabled=None):
+def editdomain(domain,records=None):
     domainid = domain_id[domain]
     editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json"}
     editdomain_request = requests.post("https://dnsapi.cn/Record.List",data=editdomain_data,cookies=session['cookies'])
     editdomain_result = json.loads(editdomain_request.text)
-    print editdomain_result
-    return render_template("editdomain.html")
-    
+    records = editdomain_result["records"]
+    #for record in records:
+        #sub_id = record["id"]
+        #sub_name = record["name"]
+        #sub_type = record["type"]
+        #sub_ttl = record["ttl"]
+        #sub_value = record["value"]
+        #sub_mx = record["mx"]
+        #sub_enabled = record["enabled"]
+    #return render_template("editdomain.html",sub_id=sub_id,sub_name=sub_name,sub_type=sub_type,sub_ttl=sub_ttl,sub_value=sub_value,sub_mx=sub_mx,sub_enabled=sub_enabled,domain=domain)
+    return render_template("editdomain.html",records=records,domain=domain)
 #删除域名
 
 @app.route("/rm/<domain>",methods=["GET"])
