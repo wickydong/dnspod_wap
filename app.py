@@ -61,13 +61,16 @@ def domainlist(domainfree=None,domainvip=None,state=None):
         domainname = domainmessage["name"]
         domaingrade = domainmessage["grade"]
         domainid = domainmessage["id"]
-        domain_id[domainname] = domainid
+        #domain_id[domainname] = domainid
         print domain_id
         if domaingrade == "D_Free" or domaingrade == "DP_Free":
-            domainfree.append(domainname)
+            t = {"domainname":domainname,"domainid": domainid}
+            #t[domainname] = domainid   
+            domainfree.append(t)
             print domainname,"is free"
         else:
-            domainvip.append(domainname)
+            t = {"domainname": domainname,"domainid": domainid}
+            domainvip.append(t)
             print domainvip,"is vip"
     return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip,state=state)
 
@@ -98,10 +101,11 @@ def Add_Domains(add_domain_status=None):
 
 #编辑域名
 
-@app.route("/editdomain/<domain>")
+@app.route("/editdomain")
 #def editdomain(domain,sub_id=None,sub_name=None,sub_type=None,sub_ttl=None,sub_value=None,sub_mx=None,sub_enabled=None):
-def editdomain(domain,records=None):
-    domainid = domain_id[domain]
+def editdomain(domain=None,records=None):
+    domain = request.args.get("domain")
+    domainid = request.args.get("domain_id")
     editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json"}
     editdomain_request = requests.post("https://dnsapi.cn/Record.List",data=editdomain_data,cookies=session['cookies'])
     editdomain_result = json.loads(editdomain_request.text)
@@ -115,12 +119,46 @@ def editdomain(domain,records=None):
         #sub_mx = record["mx"]
         #sub_enabled = record["enabled"]
     #return render_template("editdomain.html",sub_id=sub_id,sub_name=sub_name,sub_type=sub_type,sub_ttl=sub_ttl,sub_value=sub_value,sub_mx=sub_mx,sub_enabled=sub_enabled,domain=domain)
-    return render_template("editdomain.html",records=records,domain=domain)
+    return render_template("editdomain.html",records=records,domain=domain,domainid=domainid)
+
+
+#进入修改域名记录(后续)
+
+@app.route("/edit_record")
+def edit_record():
+    domain = request.args.get("domain")
+    record_id = request.args.get("record_id")
+    domainid = request.args.get("domain_id")
+    recordinfo_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json","record_id": record_id}
+    recordinfo_request = requests.post("https://dnsapi.cn/Record.Info",data=recordinfo_data,cookies=session['cookies'])
+    recordinfo_result = json.loads(recordinfo_request.text)
+    domain_grade = recordinfo_result["domain"]["domain_grade"]
+    sub_domain = recordinfo_result["record"]["sub_domain"]
+    record_value = recordinfo_result["record"]["value"]
+    record_type = recordinfo_result["record"]["record_type"]
+    ttl = recordinfo_result["record"]["ttl"]
+    mx = recordinfo_result["record"]["mx"]
+    recordline_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format": "json","domain_grade": domain_grade}
+    recordline_request = requests.post("https://dnsapi.cn/Record.Line",data=recordline_data,cookies=session["cookies"])
+    recordline_result = json.loads(recordline_request.text)
+    recordline = recordline_result["lines"]
+    #return  recordline
+    return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx)
+
+#禁用记录（后续）
+
+@app.route("/record_status/")
+def record_status():
+    return render_template("record_status.html")
+
+
+
 #删除域名
 
 @app.route("/rm/<domain>",methods=["GET"])
 def rm(domain):
     return render_template("rm.html",domain=domain)
+
 
 #确认删除
 

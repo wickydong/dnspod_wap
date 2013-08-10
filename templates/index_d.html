@@ -1,10 +1,8 @@
-<!DOCTYPE html>
+<!CTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>
 	DNSPod移动设备3G版
-</title>
-<link rel="Stylesheet" href="/static/css/bootstrap.min.css" type="text/css" />
-<link rel="Stylesheet" href="/static/css/Commonp.css" type="text/css" />
-<meta name="viewport" content="width=device-width" />
+</title><link rel="Stylesheet" href="/static/css/Common.css" type="text/css" /><meta name="viewport" content="width=device-width" />
 </head>
 <style type="text/css">
 .websjy2{-moz-border-radius:5px;-webkit-border-radius:5px;border-radius:5px;}
@@ -14,8 +12,15 @@ table{font-family:"微软雅黑"; font-size:12px;}
 <meta charset="utf-8" />
 <body>
 
-    <form name="form1" method="post" action="/login" id="form1" class="form1">
+    <form name="form1" method="post" action="/login_d" id="form1" class="form1">
+<div>
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE2ODUzMDE0NjZkZMN/78CM0AbOJxO3SvQrfUVKOHU5jtuZT14ttyag2p8v" />
+</div>
 
+<div>
+
+	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWBALXqs/jDgKZ3uboCgLD2r/rAgKegd7yBV99P7tSRdeGUFAi95mQ6Bm4xW+2CmGieSMbioCr5OqM" />
+</div>
 <div style="border:1px solid #CCCCCC; width:270px; height:230px; background:#EEE; margin-bottom:10px;padding:20px; font-size:12px; margin:2px auto" class="websjy2";>
     <table border="0" cellpadding="0" cellspacing="5" width="250px">
         <tr>
@@ -35,7 +40,7 @@ table{font-family:"微软雅黑"; font-size:12px;}
                 E-MAIL：
             </td>
             <td>
-                <input name="user_mail" type="text" id="ctlUsernameTextBox" style="width:170px;" placeholder="输入帐号，亲" value="{{ user_mail }}" />
+                <input name="user_mail" type="text" id="ctlUsernameTextBox" style="width:170px;" placeholder="输入帐号，亲"/>
             </td>
         </tr>
         <tr>
@@ -43,18 +48,17 @@ table{font-family:"微软雅黑"; font-size:12px;}
                 密码：
             </td>
             <td>
-                <input name="user_passwd" type="password" id="ctlPasswordTextBox" style="width:170px;" placeholder="输入密码，乖" value="{{ user_passwd }}" />
+                <input name="user_passwd" type="password" id="ctlPasswordTextBox" style="width:170px;" placeholder="输入密码，乖"/>
                 
                 
             </td>
-            {% if is_dtoken %}
+            
             <tr>
-                <td>D令牌：</td>
+<td>D令牌：</td>
                 <td><input name="user_d" type="text" style="width:170px;" placeholder="别闹,开D令牌啦" />
                 </td>
                 </td>
             </tr>
-            {% endif %}
             <tr>
                 <td>&nbsp;
                     
