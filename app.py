@@ -47,7 +47,10 @@ def login_d():
 @app.route("/domainlist/<state>")
 def domainlist(domainfree=None,domainvip=None,state=None):
     login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json","error_on_empty": "no"}
-    login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data, cookies=session['cookies'])
+    if session['cookies']:
+        login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data, cookies=session['cookies'])
+    else:
+        login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data)
     domainlist = json.loads(login_request.text)
     domaininfo = domainlist["info"]
     domainnum = domaininfo["all_total"]
