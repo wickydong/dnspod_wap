@@ -18,7 +18,7 @@
 
 <body>
 
-    <form name="form1" method="post" action="RecordForm.aspx?domain=nice4you.tk&amp;domainid=7685802&amp;recordid=36482310" id="form1">
+    <form name="form1" method="post" action="/editrecord?domain={{domain}}&record_id={{record_id}}&domain_id={{domain_id}}&recordline={{recordline}}" id="form1">
 
 <div>
 
@@ -50,7 +50,7 @@
 
             <td>
 
-                <input name="ctlSubnameTextBox" type="text" value="{{ sub_domain }}" id="ctlSubnameTextBox" style="font-weight:normal;width:50px;" />
+                <input name="sub_domain" type="text" value="{{ sub_domain }}" id="ctlSubnameTextBox" style="font-weight:normal;width:50px;" />
 
                 <span id="ctlDomainLabel" style="font-weight:normal;">.{{domain}}</span>
 
@@ -68,7 +68,7 @@
 
             <td>
 
-                <select name="ctlTypeDropdown" id="ctlTypeDropdown" onchange="return dropdown_OnChange()" style="font-weight:normal;width:140px;">
+                <select name="record_type" id="ctlTypeDropdown" onchange="return dropdown_OnChange()" style="font-weight:normal;width:140px;">
         <option value="{{ record_type }}" selected="selected">{{record_type }}记录</option>
 	<option value="A">A记录</option>
 	<option value="CNAME">CNAME记录</option>
@@ -98,7 +98,7 @@
 
             <td>
 
-                <select name="ctlISPDropdown" id="ctlISPDropdown" style="font-weight:normal;width:140px;">
+                <select name="recordline" id="ctlISPDropdown" style="font-weight:normal;width:140px;">
 			{% for record in recordline %}
                         {% if record == "默认" %}
 			<option selected="selected" value="{{ record }}">{{ record }}</option>
@@ -122,7 +122,7 @@
 
             <td>
 
-                <input name="ctlValueTextBox" type="text" value="{{ record_value }}" id="ctlValueTextBox" style="font-weight:normal;width:140px;" />
+                <input name="record_value" type="text" value="{{ record_value }}" id="ctlValueTextBox" style="font-weight:normal;width:140px;" />
 
             </td>
 
@@ -138,7 +138,7 @@
 
             <td>
                
-                <input name="ctlMXLevelTextBox" type="text" value="{{ mx }}" id="ctlMXLevelTextBox" style="font-weight:normal;width:140px;" />
+                <input name="mx" type="text" value="{{ mx }}" id="ctlMXLevelTextBox" style="font-weight:normal;width:140px;" />
 
             </td>
 
@@ -154,7 +154,7 @@
 
             <td>
 
-                <input name="ctlTTLTextBox" type="text" value="{{ ttl }}" id="ctlTTLTextBox" style="font-weight:normal;width:140px;" />
+                <input name="ttl" type="text" value="{{ ttl }}" id="ctlTTLTextBox" style="font-weight:normal;width:140px;" />
 
             </td>
 
@@ -193,6 +193,9 @@
         </tr>
 
         <tr><td colspan="2" align="center">
+{% if modify_status %}
+<p>{{modify_status}}</p>
+{% endif %}
 
             
 
