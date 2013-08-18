@@ -32,6 +32,7 @@ def login_d():
     if int(user_code) == 1:
         session["user_mail"] = user_mail
         session["user_passwd"] = user_passwd
+        session['cookies'] = ''
         for i in login_request.cookies:
             if i.name[0] == 't':
                 session['cookies'] = {i.name: i.value}
@@ -203,6 +204,8 @@ def disabled_domain(domain):
 @app.route("/login_out")
 def login_out():
     session.pop("user_mail",None)
+    session.pop("user_passwd", None)
+    session.pop("cookies", None)
     return redirect(url_for("index"))
 
 
