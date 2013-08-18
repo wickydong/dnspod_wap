@@ -48,10 +48,7 @@ def login_d():
 @app.route("/domainlist/<state>")
 def domainlist(domainfree=None,domainvip=None,state=None):
     login_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"format": "json","error_on_empty": "no"}
-    if session['cookies']:
-        login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data, cookies=session['cookies'])
-    else:
-        login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data)
+    login_request = requests.post("https://dnsapi.cn/Domain.List",data=login_data, cookies=session['cookies'])
     domainlist = json.loads(login_request.text)
     domaininfo = domainlist["info"]
     domainnum = domaininfo["all_total"]
@@ -147,8 +144,32 @@ def edit_record():
     recordline_result = json.loads(recordline_request.text)
     recordline = recordline_result["lines"]
     #return  recordline
-    return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx)
+    return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domainid,record_id=record_id)
 
+@app.route("/editrecord",methods=["POST","GET"])
+def editrecord():
+    #recordline = request.args.get("recordline")
+    domain = request.args.get("domain")
+    domain_id = request.args.get("domain_id")
+    record_id = request.args.get("record_id")
+    print domain_id,record_id
+    sub_domain = request.form["sub_domain"]
+    record_type = request.form["record_type"]
+    recordline = request.form["recordline"]
+    record_value = request.form["record_value"]
+    mx = request.form["mx"]
+    ttl = request.form["ttl"]
+    modify_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domain_id,"format":"json","record_id": record_id,"sub_domain": sub_domain,"record_type": record_type,"record_line": recordline,"value": record_value,"mx": mx,"ttl": ttl}
+    recordmodify_request = requests.post("https://dnsapi.cn/Record.Modify",data=modify_data,cookies=session["cookies"])
+    recordmodify_result = json.loads(recordmodify_request.text)
+    recordmodify_code = recordmodify_result["status"]["code"]
+    if int(recordmodify_code) == 1:
+        modify_status = "success"
+    else:
+        modify_status = "wrong"
+    return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domain_id,record_id=record_id,modify_status=modify_status)
+    #return recordmodify_code
+    
 #禁用记录（后续）
 
 @app.route("/record_status/")
