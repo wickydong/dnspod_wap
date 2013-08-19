@@ -3,7 +3,6 @@
 import json
 import requests
 from flask import Flask,render_template,request,session,url_for,redirect,session,make_response
-#domain_id = {}
 g_record_line = {}
 
 app = Flask(__name__)
@@ -63,11 +62,8 @@ def domainlist(domainfree=None,domainvip=None,state=None):
         domaingrade = domainmessage["grade"]
         domainid = domainmessage["id"]
         domainstatus = domainmessage["status"]
-        #domain_id[domainname] = domainid
-        #print domain_id
         t = {"domainname":domainname,"domainid": domainid,"status": domainstatus}
         if domaingrade == "D_Free" or domaingrade == "DP_Free":
-            #t[domainname] = domainid   
             domainfree.append(t)
             print domainname,"is free"
         else:
@@ -103,24 +99,17 @@ def Add_Domains(add_domain_status=None):
 #编辑域名
 
 @app.route("/editdomain")
-#def editdomain(domain,sub_id=None,sub_name=None,sub_type=None,sub_ttl=None,sub_value=None,sub_mx=None,sub_enabled=None):
-def editdomain(domain=None,records=None):
+def editdomain():
     domain = request.args.get("domain")
     domainid = request.args.get("domain_id")
+    rm_state = request.args.get("rm_state")
+    print domain,domainid
     editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json"}
     editdomain_request = requests.post("https://dnsapi.cn/Record.List",data=editdomain_data,cookies=session['cookies'])
     editdomain_result = json.loads(editdomain_request.text)
     records = editdomain_result["records"]
-    #for record in records:
-        #sub_id = record["id"]
-        #sub_name = record["name"]
-        #sub_type = record["type"]
-        #sub_ttl = record["ttl"]
-        #sub_value = record["value"]
-        #sub_mx = record["mx"]
-        #sub_enabled = record["enabled"]
-    #return render_template("editdomain.html",sub_id=sub_id,sub_name=sub_name,sub_type=sub_type,sub_ttl=sub_ttl,sub_value=sub_value,sub_mx=sub_mx,sub_enabled=sub_enabled,domain=domain)
-    return render_template("editdomain.html",records=records,domain=domain,domainid=domainid)
+    print records
+    return render_template("editdomain.html",records=records,domain=domain,domainid=domainid,rm_state=rm_state)
 
 
 #进入修改域名记录(后续)
@@ -150,7 +139,6 @@ def edit_record():
     	recordline_result = json.loads(recordline_request.text)
     	recordline = recordline_result["lines"]
 	g_record_line[rl_key] = recordline
-    #return  recordline
     return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domainid,record_id=record_id)
 
 @app.route("/editrecord",methods=["POST","GET"])
@@ -191,6 +179,7 @@ def rm_record():
     domain = request.args.get("domain")
     record_id = request.args.get("record_id")
     domain_id = request.args.get("domain_id")
+    print domain,record_id,domain_id
     return render_template("rm_record.html",record_id=record_id,domain_id=domain_id,domain=domain)
 #确认删除记录
 @app.route("/rm_record_sure")
@@ -202,11 +191,13 @@ def rm_record_sure():
     rm_record_request = requests.post("https://dnsapi.cn/Record.Remove",data=rm_record_data,cookies=session["cookies"])
     rm_record_result = json.loads(rm_record_request.text)
     rm_code = rm_record_result["status"]["code"]
-    print rm_code
-    if rm_code == 1:
-        return redirect(url_for("editdomain"))
+    print rm_code,domain,domain_id
+    if int(rm_code) == 1:
+        rm_state = "success"
+        return redirect(url_for("editdomain",domain=domain,domain_id=domain_id,rm_state=rm_state))
     else:
-        return redirect(url_for("editdomain"))
+        rm_state = "wrong"
+        return redirect(url_for("editdomain",domain=domain,domain_id=domain_id,rm_state=rm_state))
 
 
 #删除域名
