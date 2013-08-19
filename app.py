@@ -3,8 +3,8 @@
 import json
 import requests
 from flask import Flask,render_template,request,session,url_for,redirect,session,make_response
-
-domain_id = {}
+#domain_id = {}
+g_record_line = {}
 
 app = Flask(__name__)
 
@@ -62,15 +62,15 @@ def domainlist(domainfree=None,domainvip=None,state=None):
         domainname = domainmessage["name"]
         domaingrade = domainmessage["grade"]
         domainid = domainmessage["id"]
+        domainstatus = domainmessage["status"]
         #domain_id[domainname] = domainid
-        print domain_id
+        #print domain_id
+        t = {"domainname":domainname,"domainid": domainid,"status": domainstatus}
         if domaingrade == "D_Free" or domaingrade == "DP_Free":
-            t = {"domainname":domainname,"domainid": domainid}
             #t[domainname] = domainid   
             domainfree.append(t)
             print domainname,"is free"
         else:
-            t = {"domainname": domainname,"domainid": domainid}
             domainvip.append(t)
             print domainvip,"is vip"
     return render_template("domainlist.html",domainfree=domainfree,domainvip=domainvip,state=state)
@@ -139,10 +139,17 @@ def edit_record():
     record_type = recordinfo_result["record"]["record_type"]
     ttl = recordinfo_result["record"]["ttl"]
     mx = recordinfo_result["record"]["mx"]
-    recordline_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format": "json","domain_grade": domain_grade}
-    recordline_request = requests.post("https://dnsapi.cn/Record.Line",data=recordline_data,cookies=session["cookies"])
-    recordline_result = json.loads(recordline_request.text)
-    recordline = recordline_result["lines"]
+
+
+    rl_key = 'rl_' + session['user_mail'] + '_' + domain
+    if rl_key in g_record_line:
+	recordline = g_record_line[rl_key]
+    else:
+    	recordline_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format": "json","domain_grade": domain_grade}
+    	recordline_request = requests.post("https://dnsapi.cn/Record.Line",data=recordline_data,cookies=session["cookies"])
+    	recordline_result = json.loads(recordline_request.text)
+    	recordline = recordline_result["lines"]
+	g_record_line[rl_key] = recordline
     #return  recordline
     return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domainid,record_id=record_id)
 
@@ -163,11 +170,13 @@ def editrecord():
     recordmodify_request = requests.post("https://dnsapi.cn/Record.Modify",data=modify_data,cookies=session["cookies"])
     recordmodify_result = json.loads(recordmodify_request.text)
     recordmodify_code = recordmodify_result["status"]["code"]
+    print recordmodify_code
     if int(recordmodify_code) == 1:
         modify_status = "success"
     else:
         modify_status = "wrong"
-    return render_template("edit_record.html",domain=domain,recordline=recordline,sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domain_id,record_id=record_id,modify_status=modify_status)
+    rl_key = 'rl_' + session['user_mail'] + '_' + domain
+    return render_template("edit_record.html",domain=domain,recordline=g_record_line[rl_key],sub_domain=sub_domain,record_value=record_value,record_type=record_type,ttl=ttl,mx=mx,domain_id=domain_id,record_id=record_id,modify_status=modify_status)
     #return recordmodify_code
     
 #禁用记录（后续）
@@ -176,6 +185,28 @@ def editrecord():
 def record_status():
     return render_template("record_status.html")
 
+#删除记录
+@app.route("/rm_record")
+def rm_record():
+    domain = request.args.get("domain")
+    record_id = request.args.get("record_id")
+    domain_id = request.args.get("domain_id")
+    return render_template("rm_record.html",record_id=record_id,domain_id=domain_id,domain=domain)
+#确认删除记录
+@app.route("/rm_record_sure")
+def rm_record_sure():
+    domain = request.args.get("domain")
+    record_id = request.args.get("record_id")
+    domain_id = request.args.get("domain_id")
+    rm_record_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domain_id,"format":"json","record_id": record_id}
+    rm_record_request = requests.post("https://dnsapi.cn/Record.Remove",data=rm_record_data,cookies=session["cookies"])
+    rm_record_result = json.loads(rm_record_request.text)
+    rm_code = rm_record_result["status"]["code"]
+    print rm_code
+    if rm_code == 1:
+        return redirect(url_for("editdomain"))
+    else:
+        return redirect(url_for("editdomain"))
 
 
 #删除域名
@@ -221,8 +252,19 @@ def disabled_domain(domain):
     else:
         state = "domain is not disabled"
         return redirect(url_for("domainlist",state=state))
-
-
+#启用域名
+@app.route("/enable/<domain>")
+def enable(domain):
+    enable_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"status": "enable","format": "json"}
+    enable_request = requests.post("https://dnsapi.cn/Domain.Status",data=enable_data,cookies=session['cookies'])
+    enable_result = json.loads(enable_request.text)
+    status = enable_result["status"]
+    code = int(status["code"])
+    if code == 1:
+        return redirect(url_for("domainlist",state="enable domain is successful"))
+    else:
+        state = "domain is not enabled"
+        return redirect(url_for("domainlist",state=state))
 
 #退出登录
 @app.route("/login_out")

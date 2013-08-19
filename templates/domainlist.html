@@ -15,10 +15,6 @@
 	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWAwLghISLCQKv4IurCAKvjJe8CjCQ6I6GYkoTiiGwCpeZTWptaVZn8ywr4y5usAsK91jk" />
 </div>
     <a href="/add_domain">添加域名</a> <a href="/login_out">退出登录</a><br />
-    快速跳转
-    <input name="ctlJumpDomainTextBox" type="text" id="ctlJumpDomainTextBox" style="width:150px;" />
-    <input type="submit" name="ctlJumpToDomainButton" value="确定" id="ctlJumpToDomainButton" />
-    <br />
     
     &nbsp;
     
@@ -48,9 +44,16 @@
                             </td>
                             <td align="right">
                                 <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}" >编辑</a>
-                                <a href="/disabled/{{ i['domainname'] }}">
-                                    禁用</a> <a href="/rm/{{ i['domainname'] }}">
-                                        删除</a>
+                                {% if i['status']=="enable" %}
+                                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
+                                {% elif i['status']=="pause" %}
+                                <a href="/enable/{{ i['domainname'] }}">启用</a>
+                                {% elif i['status']=="lock" %}
+                                    锁定
+                                {% elif i['status']=="span" %}
+                                   封禁
+                                {% endif %}
+ 				<a href="/rm/{{ i['domainname'] }}">删除</a>
                             </td>
                         </tr>
                     </table>
@@ -86,9 +89,16 @@
                             </td>
                             <td align="right">
                                 <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}">编辑</a>
-                                <a href="/disabled/{{ i['domainname'] }}">
-                                    禁用</a> <a href="/rm/{{ i['domainname'] }}">
-                                        删除</a>
+                                {% if i['status']=="enable" %}
+                                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
+                                {% elif i['status']=="pause" %}
+                                <a href="/enable/{{ i['domainname'] }}">启用</a>
+                                {% elif i['status']=="lock" %}
+                                    锁定
+                                {% elif i['status']=="span" %}
+                                   封禁
+                                {% endif %}
+                                <a href="/rm/{{ i['domainname'] }}">删除</a>
                             </td>
                         </tr>
                     </table>
@@ -99,20 +109,6 @@
             <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
                 <tr>
                     <td class="splitLineDown">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td>
-                                    已禁用域名 (共<span id="ctlDisabledDomainDataList_ctl00_ctlDomainTotalLabel">0</span>个)
-                                </td>
-                                <td align="right">
-                                    <a href="#">TOP</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-        
-            </table>
         
     <br />
     <table width="250px">

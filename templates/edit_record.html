@@ -18,7 +18,7 @@
 
 <body>
 
-    <form name="form1" method="post" action="/editrecord?domain={{domain}}&record_id={{record_id}}&domain_id={{domain_id}}&recordline={{recordline}}" id="form1">
+    <form name="form1" method="post" action="/editrecord?domain={{domain}}&record_id={{record_id}}&domain_id={{domain_id}}" id="form1">
 
 <div>
 
@@ -36,7 +36,7 @@
 
 </div>
 
-    <a href="/domainlist/%20">返回域名列表</a> <a href="#" onclick="javascript:history.back()">返回记录列表</a><br />
+    <a href="/domainlist/%20">返回域名列表</a> <a href="/editdomain?domain={{domain}}&domain_id={{domain_id}}">返回记录列表</a><br />
 
     <table border="0" width="250px">
 
