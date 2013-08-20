@@ -1,78 +1,29 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head>
-<title>{{ domain }}记录列表</title>
-<link rel="Stylesheet" href="/static/css/Common.css" type="text/css" /><meta name="viewport" content="width=device-width" />
-</head>
-
-<body>
-
-    <form name="form1" method="post"  id="form1">
-<div>
-</div>
+{% extends "base.html" %}
+{% block title %}{{ domain }}记录列表{% endblock %}
+{% block body %}
+<form name="add_domain" method="post" action="/add_domains" id="form1" class="span4 well">
+    <h3>{{domain}}记录列表</h3>
+    <p>
     <a href="/domainlist/%20">返回域名列表</a>
     <a href="">添加记录</a>
-    <br />
-    主机头：<input name="ctlfSubnameTextBox" type="text" id="ctlfSubnameTextBox" style="width:35px;" />
-    记录值：<input name="ctlfValueTextBox" type="text" id="ctlfValueTextBox" style="width:60px;" />
-    <input type="submit" name="ctlfSubmitButton" value="确定" id="ctlfSubmitButton" />
-    <br />
-    <table width="250px">
-        <tr>
-            <td align="right">
-            </td>
-        </tr>
-    </table>
-    <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
+    </p>
+
+    <table border="0" style="width:100%;">
+    {% for record in records %}
     <tr>
-	<td colspan="2">
-	    <table class="splitLineDown" border="0" cellpadding="0" cellspacing="0" width="100%">
-		<tr>
-		    <td>
-			<span id="ctlRecoardDataList_ctl01_ctlSortFieldLabel">A</span>&nbsp;
-		    </td>
-		    <td width="35" align="right">
-			<a href="#">TOP</a>
-		    </td>
-		</tr>
-	    </table>
-	</td>
+        <td style="width:70%;">{{ record["name"] }} {{ record["line"] }} {{ record["value"]}} 
+        </td>
+        <td style="width:30%;">
+            <a href="/edit_record?domain={{domain}}&record_id={{record["id"]}}&domain_id={{domainid}}"> 编辑</a>
+            <a href=>禁用</a>
+            <a href="/rm_record?record_id={{record["id"]}}&domain_id={{domainid}}&domain={{domain}}"> 删除</a>
+        </td>
     </tr>
-    <tr>
-	<td colspan="2">
-		    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-		    {% for record in records %}
-		    <tr>
-			<td width="35px">
-			    <span>{{ record["name"] }}</span>
-			</td>
-			<td width="35px">
-			    <span>{{ record["line"] }}</span>
-			</td>
-			<td>
-			    <span>{{ record["value"]}}</span>
-			</td>
-			<td align="right" width="95px">
-			    <a href="/edit_record?domain={{domain}}&record_id={{record["id"]}}&domain_id={{domainid}}">
-				编辑</a>
-			    <a href=>禁用</a>
-			    <a href="/rm_record?record_id={{record["id"]}}&domain_id={{domainid}}&domain={{domain}}">
-				删除</a>
-			</td>
-		    </tr>
-		   {% endfor %}
-		   </table>
-{% if rm_state %}
-<p>{{ rm_state }}</p>
-{% endif %}
+    {% endfor %}
 
-	</td>
-    </tr>
-    </table>
-    </form>
-</body>
-</html>
-
-
-
+    {% if rm_state %}
+    <p>{{ rm_state }}</p>
+    {% endif %}
+</table>
+</form>
+{% endblock %}

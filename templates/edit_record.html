@@ -1,228 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-
-<head><title>
-
-	修改记录{{ domain }}
-
-</title><link rel="Stylesheet" href="../Common.css" type="text/css" /><meta name="viewport" content="width=device-width" />
-
-
-
-    <script language="javascript" src="../Scripts/RecordForm_Page_ScriptInvoke.js" type="text/javascript"></script>
-
-
-
-</head>
-
-<body>
-
-    <form name="form1" method="post" action="/editrecord?domain={{domain}}&record_id={{record_id}}&domain_id={{domain_id}}" id="form1">
-
-<div>
-
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTEyNjg5MDg4NTIPZBYCAgMPZBYIAgMPDxYCHgRUZXh0BQwubmljZTR5b3UudGtkZAIFDxAPFgIeC18hRGF0YUJvdW5kZxYCHghvbmNoYW5nZQUacmV0dXJuIGRyb3Bkb3duX09uQ2hhbmdlKClkZGQCBw8QDxYCHwFnZGRkZAILDw8WAh8ABQEwZGRkKA9chlnhZqnMO+C281PrrSs9to8ABc5IxMEvYvk4dzI=" />
-
-</div>
-
-
-
-<div>
-
-
-
-	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWFwKk9e7tDQLerdfFDgLG6PjUBgLH6PjUBgLE6PjUBgLF6PjUBgLC6PjUBgLD6PjUBgLA6PjUBgLR6PjUBgLe6PjUBgLG6LjXBgKc/ItSAu+jtPAEAojJk4wGAujKopMEArG62JoKAq2TwMUFAo6nkYcKAuK+waUIAu/X9vcIAp6B3vIFAsDUkliJ2yyyLltdUJkhMlcVqoPPC65TaFpCUCCazU/WFLxeOg==" />
-
-</div>
-
-    <a href="/domainlist/%20">返回域名列表</a> <a href="/editdomain?domain={{domain}}&domain_id={{domain_id}}">返回记录列表</a><br />
-
-    <table border="0" width="250px">
-
+{% extends "base.html" %}
+{% block title %} 修改记录{{ domain }} {% endblock %}
+{% block body %}
+<form name="add_domain" method="post" 
+    action="/editrecord?domain={{domain}}&record_id={{record_id}}&domain_id={{domain_id}}"
+    id="form1" class="span4 well">
+    <p> <a href="/domainlist/%20">返回域名列表</a> <a href="/editdomain?domain={{domain}}&domain_id={{domain_id}}">返回记录列表</a> 
+    </p>
+    <table border="0" style="width:100%;">
         <tr>
-
-            <td>
-
-                域名:
-
+            <td style="width:70px;">
+                域名： 
             </td>
-
             <td>
-
-                <input name="sub_domain" type="text" value="{{ sub_domain }}" id="ctlSubnameTextBox" style="font-weight:normal;width:50px;" />
-
-                <span id="ctlDomainLabel" style="font-weight:normal;">.{{domain}}</span>
-
+                <input name="sub_domain" type="text" value="{{ sub_domain }}" />.{{domain}}
             </td>
-
         </tr>
-
         <tr>
-
-            <td>
-
-                记录类型:
-
+            <td style="width:70px;">
+                记录类型： 
             </td>
-
             <td>
-
-                <select name="record_type" id="ctlTypeDropdown" onchange="return dropdown_OnChange()" style="font-weight:normal;width:140px;">
-        <option value="{{ record_type }}" selected="selected">{{record_type }}记录</option>
-	<option value="A">A记录</option>
-	<option value="CNAME">CNAME记录</option>
-	<option value="MX">MX记录</option>
-	<option value="NS">NS记录</option>
-	<option value="TXT">TXT记录</option>
-	<option value="AAAA">AAAA记录</option>
-	<option value="SRV">SRV记录</option>
-	<option value="显性URL">显性URL记录</option>
-	<option value="隐性URL">隐性URL记录</option>
-
-
-
-</select>
-
-            </td>
-
-        </tr>
-
-        <tr>
-
-            <td>
-
-                线路类型:
-
-            </td>
-
-            <td>
-
-                <select name="recordline" id="ctlISPDropdown" style="font-weight:normal;width:140px;">
-			{% for record in recordline %}
-                        {% if record == "默认" %}
-			<option selected="selected" value="{{ record }}">{{ record }}</option>
-                        {% else %}
-                        <option value="{{ record }}">{{ record }}</option>
-                        {% endif %}
-			{% endfor %}
+                <select name="record_type" >
+                    <option value="{{ record_type }}" selected="selected">{{record_type }}记录</option>
+                    <option value="A">A记录</option>
+                    <option value="CNAME">CNAME记录</option>
+                    <option value="MX">MX记录</option>
+                    <option value="NS">NS记录</option>
+                    <option value="TXT">TXT记录</option>
+                    <option value="AAAA">AAAA记录</option>
+                    <option value="SRV">SRV记录</option>
+                    <option value="显性URL">显性URL记录</option>
+                    <option value="隐性URL">隐性URL记录</option>
                 </select>
 
             </td>
-
         </tr>
-
         <tr>
-
+            <td style="width:70px;">
+                线路类型： 
+            </td>
             <td>
-
-                记录值:
+                <select name="recordline" id="ctlISPDropdown" style="font-weight:normal;width:140px;">
+                    {% for record in recordline %}
+                    {% if record == "默认" %}
+                    <option selected="selected" value="{{ record }}">{{ record }}</option>
+                    {% else %}
+                    <option value="{{ record }}">{{ record }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
 
             </td>
-
-            <td>
-
-                <input name="record_value" type="text" value="{{ record_value }}" id="ctlValueTextBox" style="font-weight:normal;width:140px;" />
-
-            </td>
-
         </tr>
-
         <tr>
-
+            <td style="width:70px;">
+                记录值：
+            </td>
             <td>
 
-                MX等级:
-
+                <input name="record_value" type="text" value="{{ record_value }}" />
             </td>
-
-            <td>
-               
-                <input name="mx" type="text" value="{{ mx }}" id="ctlMXLevelTextBox" style="font-weight:normal;width:140px;" />
-
-            </td>
-
         </tr>
-
         <tr>
-
-            <td>
-
-                TTL:
-
+            <td style="width:70px;">
+                MX等级： 
             </td>
-
             <td>
-
-                <input name="ttl" type="text" value="{{ ttl }}" id="ctlTTLTextBox" style="font-weight:normal;width:140px;" />
-
+                <input name="mx" type="text" value="{{ mx }}" />
             </td>
-
         </tr>
-
         <tr>
-
-            <td>
-
-                &nbsp;
-
+            <td style="width:70px;">
+                TTL：   
             </td>
-
             <td>
-
-                <table width="100%" border="0">
-
-                    <tr>
-
-                        <td colspan="2">
-
-                            <input type="submit" name="ctlSubmitButton" value="提交" onclick="return executeScript();" id="ctlSubmitButton" />
-
-                        &nbsp;<input type="submit" name="ctlBackButton" value="返回" id="ctlBackButton" />
-
-&nbsp;
-
-                        </td>
-
-                    </tr>
-
-                </table>
-
+                <input name="ttl" type="text" value="{{ ttl }}" />
             </td>
-
         </tr>
-
-        <tr><td colspan="2" align="center">
-{% if modify_status %}
-<p>{{modify_status}}</p>
-{% endif %}
-
-            
-
-<p>@ 2010 DNSPod</p>
-
-
-
-            </td></tr>
-
     </table>
-
-    </form>
-
-
-
-    <script language="javascript" type="text/javascript">
-
-    page_onLoad();
-
-    </script>
-
-
-
-</body>
-
-</html>
-
-
-
-
+    <p>
+    <input type="submit" name="ctlSubmitButton" value="提交"/>
+    </p>
+    {% if modify_status %}
+    <p>{{modify_status}}</p>
+    {% endif %}
+</form>
+{% endblock %}

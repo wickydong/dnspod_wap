@@ -104,7 +104,7 @@ def editdomain():
     domainid = request.args.get("domain_id")
     rm_state = request.args.get("rm_state")
     print domain,domainid
-    editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json"}
+    editdomain_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain_id": domainid,"format":"json","error_on_empty": "no"}
     editdomain_request = requests.post("https://dnsapi.cn/Record.List",data=editdomain_data,cookies=session['cookies'])
     editdomain_result = json.loads(editdomain_request.text)
     records = editdomain_result["records"]
@@ -160,7 +160,7 @@ def editrecord():
     recordmodify_code = recordmodify_result["status"]["code"]
     print recordmodify_code
     if int(recordmodify_code) == 1:
-        modify_status = "success"
+        modify_status = "successful"
     else:
         modify_status = "wrong"
     rl_key = 'rl_' + session['user_mail'] + '_' + domain
@@ -222,7 +222,7 @@ def rm_domain(domain):
     elif code == -15 or code == 7:
         state = "domain is already ban or lock"
         return redirect(url_for("domainlist",state=state))
-
+   #需要加入D令牌判断 code == 50 
 #禁用域名
 
 @app.route("/disabled/<domain>")
@@ -243,6 +243,7 @@ def disabled_domain(domain):
     else:
         state = "domain is not disabled"
         return redirect(url_for("domainlist",state=state))
+   #需要加上D令牌报错判断 code == 50
 #启用域名
 @app.route("/enable/<domain>")
 def enable(domain):

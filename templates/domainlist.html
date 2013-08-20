@@ -1,127 +1,58 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head><title>
-	域名列表
-</title><link rel="Stylesheet" href="/static/css/Common.css" type="text/css" /><meta name="viewport" content="width=device-width" charset="utf-8" /></head>
-<body>
-<div style="border:1px solid #CCCCCC; width:270px; height:auto; background:#EEE; margin-bottom:10px;padding:20px; font-size:12px; margin:auto" class="websjy2";>
-    <form name="form1" method="post" action="DomainList.aspx" id="form1">
-<div>
-<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUKMTAwNjA0MjY0MGRkQCyWd3l4MofqbRwcXZcRYRzjuHCI5xRBCoBeOhLU8Hw=" />
-</div>
-
-<div>
-
-	<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWAwLghISLCQKv4IurCAKvjJe8CjCQ6I6GYkoTiiGwCpeZTWptaVZn8ywr4y5usAsK91jk" />
-</div>
-    <a href="/add_domain">添加域名</a> <a href="/login_out">退出登录</a><br />
-    
-    &nbsp;
-    
-            <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
-                <tr>
-                    <td class="splitLineDown">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td>
-                                    VIP域名 (共<span id="ctlVIPDomainDataList_ctl00_ctlDomainTotalLabel">0</span>个)
-                                </td>
-                                <td align="right">
-                                    <a href="#">TOP</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-        
-            {% for i in domainvip %}
-            <tr>
-                <td colspan="3">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                        <tr>
-                            <td>
-                                <span >{{ i['domainname'] }}</span>
-                            </td>
-                            <td align="right">
-                                <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}" >编辑</a>
-                                {% if i['status']=="enable" %}
-                                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
-                                {% elif i['status']=="pause" %}
-                                <a href="/enable/{{ i['domainname'] }}">启用</a>
-                                {% elif i['status']=="lock" %}
-                                    锁定
-                                {% elif i['status']=="span" %}
-                                   封禁
-                                {% endif %}
- 				<a href="/rm/{{ i['domainname'] }}">删除</a>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-           {% endfor %}
-            </table>
-        
-    <br />
-    
-            <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
-                <tr>
-                    <td class="splitLineDown">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td>
-                                    免费域名 (共<span id="ctlFreeDomainDataList_ctl00_ctlDomainTotalLabel">9</span>个)
-                                </td>
-                                <td align="right">
-                                    <a href="#">TOP</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            {% for i in domainfree %}
-            <tr>
-                <td colspan="3">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                        <tr>
-                            <td>
-                                <span id="ctlFreeDomainDataList_ctl01_Label2">{{ i["domainname"] }}</span>
-                            </td>
-                            <td align="right">
-                                <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}">编辑</a>
-                                {% if i['status']=="enable" %}
-                                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
-                                {% elif i['status']=="pause" %}
-                                <a href="/enable/{{ i['domainname'] }}">启用</a>
-                                {% elif i['status']=="lock" %}
-                                    锁定
-                                {% elif i['status']=="span" %}
-                                   封禁
-                                {% endif %}
-                                <a href="/rm/{{ i['domainname'] }}">删除</a>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-           {% endfor %}
-    
-            <table border="0" cellpadding="1" cellspacing="0.5" width="250px">
-                <tr>
-                    <td class="splitLineDown">
-        
-    <br />
-    <table width="250px">
+{% extends "base.html" %}
+{% block title %}域名列表{% endblock %}
+{% block body %}
+<form name="form1" method="post" action="DomainList.aspx" class="span4 well">
+    <p><a href="/add_domain">添加域名</a> <a href="/login_out">退出登录</a></p>
+    <h4> VIP域名 (共0个) </h4>
+    <table border="0" style="width:100%;">
+        {% for i in domainvip %}
         <tr>
-            <td align="center">
-<p>{{ state }}</p>                
-<p>@ 2013 DNSPod</p>
+            <td style="width:70%;">
+                {{ i['domainname'] }}
+            </td>
+            <td style="width:30%;">
+                <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}" >编辑</a>
 
+                {% if i['status']=="enable" %}
+                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
+                {% elif i['status']=="pause" %}
+
+                <a href="/enable/{{ i['domainname'] }}">启用</a>
+                {% elif i['status']=="lock" %}
+                锁定
+                {% elif i['status']=="span" %}
+                封禁
+                {% endif %}
+                <a href="/rm/{{ i['domainname'] }}">删除</a>
             </td>
         </tr>
+        {% endfor %}
     </table>
-    </form>
-    </div>
-</body>
-</html>
+    <h4> 免费域名 (共0个) </h4>
+    <table border="0" style="width:100%;">
+        {% for i in domainfree %}
+        <tr>
+            <td style="width:70%;">
+                {{ i['domainname'] }}
+            </td>
+            <td style="width:30%;">
+                <a href="/editdomain?domain={{i['domainname']}}&domain_id={{i['domainid']}}" >编辑</a>
 
+                {% if i['status']=="enable" %}
+                <a href="/disabled/{{ i['domainname'] }}">禁用</a>
+                {% elif i['status']=="pause" %}
+
+                <a href="/enable/{{ i['domainname'] }}">启用</a>
+                {% elif i['status']=="lock" %}
+                锁定
+                {% elif i['status']=="span" %}
+                封禁
+                {% endif %}
+                <a href="/rm/{{ i['domainname'] }}">删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>{{ state }}</p>                
+</form>
+{% endblock %}
