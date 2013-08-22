@@ -211,18 +211,21 @@ def rm(domain):
 
 @app.route("/rm_domain/<domain>",methods=["GET"])
 def rm_domain(domain):
-    
-    rm_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"format": "json"}
+    D_code = request.args.get("D_code",None)
+    rm_data = {"login_email": session["user_mail"],"login_password": session["user_passwd"],"domain": domain,"format": "json","login_code": D_code}
     rm_request = requests.post("https://dnsapi.cn/Domain.Remove",data=rm_data,cookies=session['cookies'])
     rm_result = json.loads(rm_request.text)
     status = rm_result["status"]
     code = int(status["code"])
+    print code
     if code == 1:
         return redirect(url_for("domainlist",state="del domain is successful"))
-    elif code == -15 or code == 7:
-        state = "domain is already ban or lock"
+    elif code == -15 or code == 7 or code == 8:
+        state = "domain was ban,lock or vip"
         return redirect(url_for("domainlist",state=state))
    #需要加入D令牌判断 code == 50 
+    elif code == 50:
+        return render_template("D_code.html",domain=domain)
 #禁用域名
 
 @app.route("/disabled/<domain>")
